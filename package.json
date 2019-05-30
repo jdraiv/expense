@@ -1,0 +1,14 @@
+{
+  "name": "expense-api",
+  "version": "1.0.0",
+  "description": "APIS for the Expense app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jdraiv",
+  "license": "ISC",
+  "devDependencies": {
+    "express": "^4.17.1"
+  }
+}
