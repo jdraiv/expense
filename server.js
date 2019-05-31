@@ -39,8 +39,59 @@ const User = dbClient.define('user', {
     timestamps: false
 })
 
+const Expense = dbClient.define('expense', {
+    expenseID: {
+        type: Sequelize.STRING,
+        field: 'expense_id',
+        primaryKey: true
+    },
+    category: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        field: 'category'
+    },
+    onYear: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        field: 'on_year'
+    },
+    onMonth: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        field: 'on_month'
+    },
+    onDay: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        field: 'on_day'
+    },
+    total: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        field: 'total'
+    },
+    payee: {
+        type: Sequelize.STRING,
+        field: 'payee'
+    },
+    email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+            model: 'users',
+            key: 'email'
+        }
+    }
+}, {
+    timestamps: false,
+    defaultPrimaryKey: false
+});
+
 
 dbClient.authenticate().then(() => {
+    Expense.create({category: 'other', onYear: "2019", onMonth: "May", onDay: "11", "total": "2000", payee: "other", email: "test"}).then((expense) => {
+        console.log("Created expense:" , expense.category);
+    })
     console.log("Connection established");
 }).catch((err) => {
     console.log(err);
