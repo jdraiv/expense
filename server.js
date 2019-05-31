@@ -84,14 +84,10 @@ const Expense = dbClient.define('expense', {
     }
 }, {
     timestamps: false,
-    defaultPrimaryKey: false
 });
 
 
 dbClient.authenticate().then(() => {
-    Expense.create({category: 'other', onYear: "2019", onMonth: "May", onDay: "11", "total": "2000", payee: "other", email: "test"}).then((expense) => {
-        console.log("Created expense:" , expense.category);
-    })
     console.log("Connection established");
 }).catch((err) => {
     console.log(err);
