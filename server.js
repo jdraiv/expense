@@ -169,7 +169,21 @@ app.post('/create_expense', authMiddleware.isAuthenticated, (req, res, next) => 
         res.send({"status": "success", "data": expense});
     }).catch((err) => {
         res.send({"status": "error", "data": []})
-        console.log(err);
+    });
+});
+
+
+app.post('/get_expenses', authMiddleware.isAuthenticated, (req, res, next) => {
+    let decodedJsonToken = jwt.verify(req.signedCookies["expense-jwt"], "supersecret");
+
+    Expense.findAll({
+        where: {
+            email: decodedJsonToken.userID
+        }
+    }).then((expenses) => {
+        res.send({"status": "success", "data": expenses});
+    }).catch((err) => {
+        res.send({"status": "error", "data": []});
     });
 });
 
