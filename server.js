@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
+const bcrypt = require('bcrypt');
 
 
 /* Middleware Setup */
@@ -98,8 +99,16 @@ app.get('/', (req, res) => {
 
 
 app.post('/register', (req, res) => {
-    res.send("Testing post")
-})
+    let jsonData = req.body;
+
+    bcrypt.hash(jsonData['password'], bcrypt.genSaltSync(11)).then((hashedPassword) => {
+        User.create({email: jsonData['email'], password: hashedPassword, firstName: jsonData['first_name'], lastName: jsonData['last_name'], budget: 0}).then((user) => {
+            res.send({"status": "success"});
+        }).catch((err) => {
+            res.send({"status": "error"});
+        });
+    });
+});
 
 
 app.listen(3000, () => {
