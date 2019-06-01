@@ -41,32 +41,22 @@ const User = dbClient.define('user', {
 
 const Expense = dbClient.define('expense', {
     expenseID: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         field: 'expense_id',
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement: true
     },
     category: {
         type: Sequelize.STRING,
         allowNull: false,
         field: 'category'
     },
-    onYear: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        field: 'on_year'
-    },
-    onMonth: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        field: 'on_month'
-    },
-    onDay: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        field: 'on_day'
+    expenseDate: {
+        type: Sequelize.DATE,
+        field: 'expense_date'
     },
     total: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false,
         field: 'total'
     },
