@@ -108,7 +108,13 @@ app.post('/register', (req, res) => {
     let jsonData = req.body;
 
     bcrypt.hash(jsonData['password'], bcrypt.genSaltSync(11)).then((hashedPassword) => {
-        User.create({email: jsonData['email'], password: hashedPassword, firstName: jsonData['first_name'], lastName: jsonData['last_name'], budget: 0}).then((user) => {
+        User.create({
+            email: jsonData['email'], 
+            password: hashedPassword, 
+            firstName: jsonData['first_name'], 
+            lastName: jsonData['last_name'], 
+            budget: 0
+        }).then((user) => {
             res.send({"status": "success"});
         }).catch((err) => {
             res.send({"status": "error"});
@@ -171,8 +177,6 @@ app.post('/create_expense', authMiddleware.isAuthenticated, (req, res, next) => 
 app.get('/protected', authMiddleware.isAuthenticated, (req, res, next) => {
     res.send("Viewing protected route");
 });
-
-
 
 
 app.listen(3000, () => {
