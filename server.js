@@ -9,6 +9,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 
+/* Personal Middleware */
+const authMiddleware = require("./middleware/isAuthenticated.js");
+
+
 /* Middleware Setup */
 app.use(bodyParser.json());
 app.use(cookieParser('supersecret'));
@@ -48,6 +52,7 @@ const User = dbClient.define('user', {
     timestamps: false
 })
 
+
 const Expense = dbClient.define('expense', {
     expenseID: {
         type: Sequelize.INTEGER,
@@ -84,6 +89,7 @@ const Expense = dbClient.define('expense', {
 }, {
     timestamps: false,
 });
+
 
 
 dbClient.authenticate().then(() => {
@@ -141,6 +147,10 @@ app.post('/auth', (req, res) => {
     });
 });
 
+
+app.get('/protected', authMiddleware.isAuthenticated, (req, res, next) => {
+    res.send("Viewing protected route");
+});
 
 app.listen(3000, () => {
     console.log(`Server running on port ${port}`)
