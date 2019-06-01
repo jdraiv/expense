@@ -5,6 +5,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 
 /* Middleware Setup */
@@ -117,6 +118,11 @@ app.post('/auth', (req, res) => {
         }
     }).then((user) => {
         // Now that the user has been found, we can proceed to validate the password
+
+        // We create the tokens before entering the compare task
+        let jsonToken = jwt.sign({userID: user.email, exp: Math.floor(Date.now() / 1000) + (60 * 15)}, 'supersecret');
+        let refreshToken = jwt.sign({userID: user.email}, 'supersecret', {expiresIn: '360h'});
+
         bcrypt.compare(jsonData['password'], user.password).then((result) => {
             if (result) {
                 res.send({"status": "success"});
@@ -124,6 +130,8 @@ app.post('/auth', (req, res) => {
             else {
                 res.send({"status": "error", "message": "Incorrect email or password"});
             }
+        }).catch((err) => {
+            console.log(err);
         })
     });
 });
