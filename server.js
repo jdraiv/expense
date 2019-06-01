@@ -188,6 +188,24 @@ app.post('/get_expenses', authMiddleware.isAuthenticated, (req, res, next) => {
 });
 
 
+app.post('/delete_expense', authMiddleware.isAuthenticated, (req, res, next) => {
+    let jsonData = req.body;
+
+    Expense.destroy({
+        where: {
+            expenseID: jsonData['id']
+        }
+    }).then((arguments) => {
+        if (arguments == 1) {
+            res.send({"status": "success", "message": "Product deleted"});
+        }
+        else {
+            res.send({"status": "error", "message": "Unable to delete product"});
+        }
+    });
+})
+
+
 app.get('/protected', authMiddleware.isAuthenticated, (req, res, next) => {
     res.send("Viewing protected route");
 });
