@@ -142,7 +142,15 @@ app.post('/auth', (req, res) => {
                 res.cookie('expense-jwt', jsonToken, {signed: true, httpOnly: true});
                 res.cookie('expense-rtk', refreshToken, {signed: true, httpOnly: true});
 
-                res.send({"status": "success"});
+                res.send({
+                    "status": "success", 
+                    "data": {
+                        "email": user.email, 
+                        "budget": user.budget, 
+                        "first_name": user.firstName, 
+                        "last_name": user.lastName
+                    }
+                });
             }
             else {
                 res.send({"status": "error", "message": "Incorrect email or password"});
@@ -203,11 +211,6 @@ app.post('/delete_expense', authMiddleware.isAuthenticated, (req, res, next) => 
             res.send({"status": "error", "message": "Unable to delete product"});
         }
     });
-})
-
-
-app.get('/protected', authMiddleware.isAuthenticated, (req, res, next) => {
-    res.send("Viewing protected route");
 });
 
 
