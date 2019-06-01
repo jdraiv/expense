@@ -3,6 +3,7 @@ const port = 3000;
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const Sequelize = require('sequelize');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -10,6 +11,7 @@ const jwt = require('jsonwebtoken');
 
 /* Middleware Setup */
 app.use(bodyParser.json());
+app.use(cookieParser('supersecret'));
 
 
 /* Database Setup */
@@ -125,6 +127,9 @@ app.post('/auth', (req, res) => {
 
         bcrypt.compare(jsonData['password'], user.password).then((result) => {
             if (result) {
+                res.cookie('expense-jwt', jsonToken, {signed: true, httpOnly: true});
+                res.cookie('expense-rtk', refreshToken, {signed: true, httpOnly: true});
+
                 res.send({"status": "success"});
             }
             else {
