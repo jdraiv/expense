@@ -10,9 +10,6 @@ const bcrypt = require('bcrypt');
 /* Middleware Setup */
 app.use(bodyParser.json());
 
-/* Utils */
-let userUtils = require('./helpers/userUtils.js');
-
 
 /* Database Setup */
 const dbClient = new Sequelize(process.env.POSTGRE_URI);
@@ -107,6 +104,27 @@ app.post('/register', (req, res) => {
         }).catch((err) => {
             res.send({"status": "error"});
         });
+    });
+});
+
+
+app.post('/auth', (req, res) => {
+    let jsonData = req.body;
+
+    User.findOne({
+        where: {
+            email: jsonData['email']
+        }
+    }).then((user) => {
+        // Now that the user has been found, we can proceed to validate the password
+        bcrypt.compare(jsonData['password'], user.password).then((result) => {
+            if (result) {
+                res.send({"status": "success"});
+            }
+            else {
+                res.send({"status": "error", "message": "Incorrect email or password"});
+            }
+        })
     });
 });
 
