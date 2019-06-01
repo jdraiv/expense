@@ -2,7 +2,15 @@
 const port = 3000;
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
+
+
+/* Middleware Setup */
+app.use(bodyParser.json());
+
+/* Utils */
+let userUtils = require('./helpers/userUtils.js');
 
 
 /* Database Setup */
@@ -87,6 +95,11 @@ dbClient.authenticate().then(() => {
 app.get('/', (req, res) => {
     res.send('Main view');
 });
+
+
+app.post('/register', (req, res) => {
+    res.send("Testing post")
+})
 
 
 app.listen(3000, () => {
