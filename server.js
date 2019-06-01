@@ -66,7 +66,7 @@ const Expense = dbClient.define('expense', {
         field: 'category'
     },
     expenseDate: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         field: 'expense_date'
     },
     total: {
@@ -143,7 +143,27 @@ app.post('/auth', (req, res) => {
             }
         }).catch((err) => {
             console.log(err);
-        })
+        });
+    });
+});
+
+
+/* APIS for Expenses */
+app.post('/create_expense', authMiddleware.isAuthenticated, (req, res, next) => {
+    let jsonData = req.body;
+    let decodedJsonToken = jwt.verify(req.signedCookies["expense-jwt"], "supersecret");
+
+    Expense.create({
+        category: jsonData['category'], 
+        total: jsonData['total'], 
+        expenseDate: jsonData['date'], 
+        payee: jsonData['payee'], 
+        email: decodedJsonToken.userID
+    }).then((expense) => {
+        res.send({"status": "success", "data": expense});
+    }).catch((err) => {
+        res.send({"status": "error", "data": []})
+        console.log(err);
     });
 });
 
@@ -151,6 +171,9 @@ app.post('/auth', (req, res) => {
 app.get('/protected', authMiddleware.isAuthenticated, (req, res, next) => {
     res.send("Viewing protected route");
 });
+
+
+
 
 app.listen(3000, () => {
     console.log(`Server running on port ${port}`)
