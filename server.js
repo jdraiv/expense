@@ -245,6 +245,6 @@ app.post('/delete_expense', authMiddleware.isAuthenticated, (req, res, next) => 
 });
 
 
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log(`Server running on port ${port}`)
 })
