@@ -222,8 +222,8 @@ app.post('/delete_expense', authMiddleware.isAuthenticated, (req, res, next) => 
         where: {
             expenseID: req.body['id']
         }
-    }).then((arguments) => {
-        if (arguments == 1) {
+    }).then((result) => {
+        if (result == 1) {
             res.send({"status": "success", "message": "Product deleted"});
         }
         else {
