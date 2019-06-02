@@ -162,6 +162,27 @@ app.post('/auth', (req, res) => {
 });
 
 
+app.put('/update_budget', authMiddleware.isAuthenticated, (req, res, next) => {
+    let decodedJsonToken = jwt.decode(req.signedCookies["expense-jwt"], "supersecret");
+
+    User.update({
+        budget: req.body['budget']
+    }, 
+    {
+        where: {
+            email: decodedJsonToken.userID
+        }
+    }).then((result) => {
+        if (result == 1) {
+            res.send({"status": "success"});
+        }
+        else {
+            res.send({"status": "error"});
+        }
+    });
+});
+
+
 /* APIS for Expenses */
 app.post('/create_expense', authMiddleware.isAuthenticated, (req, res, next) => {
     let jsonData = req.body;
