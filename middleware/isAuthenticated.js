@@ -10,13 +10,13 @@ function isAuthenticated(req, res, next) {
 
     // If the tokens are not falsy
     if (jsonToken && refreshToken) {
-        jwt.verify(jsonToken, 'supersecret', (err, decoded) => {
+        jwt.verify(jsonToken, process.env.JWT_KEY, (err, decoded) => {
             if (err) {
                 if (err.name === "TokenExpiredError") {
                     /*
                         If the JSON token is expired, we can generate a new one ONLY IF the refresh token is not expired or blacklisted
                     */
-                    jwt.verify(refreshToken, 'supersecret', (err, decoded) => {
+                    jwt.verify(refreshToken, process.env.RTK_KEY, (err, decoded) => {
                         // We won't be able to refresh the token if there is an error
                         if (err) {
                             res.send({"status": "error", "message": errorMesssage})
