@@ -165,7 +165,7 @@ app.post('/auth', (req, res) => {
 /* APIS for Expenses */
 app.post('/create_expense', authMiddleware.isAuthenticated, (req, res, next) => {
     let jsonData = req.body;
-    let decodedJsonToken = jwt.verify(req.signedCookies["expense-jwt"], "supersecret");
+    let decodedJsonToken = jwt.decode(req.signedCookies["expense-jwt"], "supersecret");
 
     Expense.create({
         category: jsonData['category'], 
@@ -182,7 +182,7 @@ app.post('/create_expense', authMiddleware.isAuthenticated, (req, res, next) => 
 
 
 app.post('/get_expenses', authMiddleware.isAuthenticated, (req, res, next) => {
-    let decodedJsonToken = jwt.verify(req.signedCookies["expense-jwt"], "supersecret");
+    let decodedJsonToken = jwt.decode(req.signedCookies["expense-jwt"], "supersecret");
 
     Expense.findAll({
         where: {
@@ -197,11 +197,9 @@ app.post('/get_expenses', authMiddleware.isAuthenticated, (req, res, next) => {
 
 
 app.post('/delete_expense', authMiddleware.isAuthenticated, (req, res, next) => {
-    let jsonData = req.body;
-
     Expense.destroy({
         where: {
-            expenseID: jsonData['id']
+            expenseID: req.body['id']
         }
     }).then((arguments) => {
         if (arguments == 1) {
