@@ -7,7 +7,7 @@ function decodeJWT(reqObject) {
 
 
 function decodeRTK(reqObject) {
-    return jwt.decode(reqObject.signedCookies["expense-jwt"], "supersecret");
+    return jwt.decode(reqObject.signedCookies["expense-rtk"], "supersecret");
 }
 
 
