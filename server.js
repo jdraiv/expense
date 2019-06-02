@@ -12,6 +12,9 @@ const jwt = require('jsonwebtoken');
 /* Personal Middleware */
 const authMiddleware = require("./middleware/isAuthenticated.js");
 
+// Utils
+const tokenUtils = require("./utils/tokens.js");
+
 
 /* Middleware Setup */
 app.use(bodyParser.json());
@@ -91,7 +94,6 @@ const Expense = dbClient.define('expense', {
 });
 
 
-
 dbClient.authenticate().then(() => {
     console.log("Connection established");
 }).catch((err) => {
@@ -134,8 +136,8 @@ app.post('/auth', (req, res) => {
         // Now that the user has been found, we can proceed to validate the password
 
         // We create the tokens before entering the compare task
-        let jsonToken = jwt.sign({userID: user.email, exp: Math.floor(Date.now() / 1000) + (60 * 15)}, 'supersecret');
-        let refreshToken = jwt.sign({userID: user.email}, 'supersecret', {expiresIn: '360h'});
+        let jsonToken = jwt.sign({userID: user.email, exp: Math.floor(Date.now() / 1000) + (60 * 15)}, "supersecret");
+        let refreshToken = jwt.sign({userID: user.email}, "supersecret", {expiresIn: '360h'});
 
         bcrypt.compare(jsonData['password'], user.password).then((result) => {
             if (result) {
@@ -163,7 +165,7 @@ app.post('/auth', (req, res) => {
 
 
 app.put('/update_budget', authMiddleware.isAuthenticated, (req, res, next) => {
-    let decodedJsonToken = jwt.decode(req.signedCookies["expense-jwt"], "supersecret");
+    let decodedJsonToken = tokenUtils.decodeJWT(req);
 
     User.update({
         budget: req.body['budget']
@@ -188,7 +190,7 @@ app.put('/update_budget', authMiddleware.isAuthenticated, (req, res, next) => {
 /* APIS for Expenses */
 app.post('/create_expense', authMiddleware.isAuthenticated, (req, res, next) => {
     let jsonData = req.body;
-    let decodedJsonToken = jwt.decode(req.signedCookies["expense-jwt"], "supersecret");
+    let decodedJsonToken = tokenUtils.decodeJWT(req);
 
     Expense.create({
         category: jsonData['category'], 
@@ -205,7 +207,7 @@ app.post('/create_expense', authMiddleware.isAuthenticated, (req, res, next) => 
 
 
 app.post('/get_expenses', authMiddleware.isAuthenticated, (req, res, next) => {
-    let decodedJsonToken = jwt.decode(req.signedCookies["expense-jwt"], "supersecret");
+    let decodedJsonToken = tokenUtils.decodeJWT(req);
 
     Expense.findAll({
         where: {

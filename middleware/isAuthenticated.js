@@ -21,8 +21,8 @@ function isAuthenticated(req, res, next) {
                             res.send({"status": "error", "message": errorMesssage})
                         }
                         else {
-                            const newJsonToken = jwt.sign({userID: decoded.userID, exp: Math.floor(Date.now() / 1000) + (60 * 15)}, 'supersecret');
-                            const newRefreshToken = jwt.sign({userID: decoded.userID}, 'supersecret', {expiresIn: '360h'});
+                            const newJsonToken = jwt.sign({userID: decoded.userID, exp: Math.floor(Date.now() / 1000) + (60 * 15)}, "supersecret");
+                            const newRefreshToken = jwt.sign({userID: decoded.userID}, "supersecret", {expiresIn: '360h'});
                             
                             // Saving the new tokens
                             res.cookie('expense-jwt', newJsonToken, {signed: true, httpOnly: true});
