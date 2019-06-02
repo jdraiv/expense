@@ -136,8 +136,8 @@ app.post('/auth', (req, res) => {
         // Now that the user has been found, we can proceed to validate the password
 
         // We create the tokens before entering the compare task
-        let jsonToken = createJWT(jsonData['email']);
-        let refreshToken = createRTK(jsonData['email']);
+        let jsonToken = tokenUtils.createJWT(jsonData['email']);
+        let refreshToken = tokenUtils.createRTK(jsonData['email']);
 
         bcrypt.compare(jsonData['password'], user.password).then((result) => {
             if (result) {
