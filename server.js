@@ -164,6 +164,14 @@ app.post('/auth', (req, res) => {
 });
 
 
+app.post('/logout', (req, res) => {
+    res.cookie('expense-jwt', "", {maxAge: 0, overwrite: true});
+    res.cookie('expense-rtk',  "", {maxAge: 0, overwrite: true});
+
+    res.send({"status": "success", "message": "Successful logout"});
+});
+
+
 app.put('/update_budget', authMiddleware.isAuthenticated, (req, res, next) => {
     let decodedJsonToken = tokenUtils.decodeJWT(req);
 
