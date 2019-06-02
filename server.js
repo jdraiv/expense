@@ -6,8 +6,6 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const Sequelize = require('sequelize');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-
 
 /* Personal Middleware */
 const authMiddleware = require("./middleware/isAuthenticated.js");
@@ -98,11 +96,6 @@ dbClient.authenticate().then(() => {
     console.log("Connection established");
 }).catch((err) => {
     console.log(err);
-});
-
-
-app.get('/', (req, res) => {
-    res.send('Main view');
 });
 
 
