@@ -20,7 +20,7 @@ app.use(cookieParser(process.env.COOKIE_PARSER_KEY));
 
 
 /* Database Setup */
-const dbClient = new Sequelize(process.env.POSTGRE_URI);
+const dbClient = new Sequelize(process.env.DATABASE_URL);
 
 
 /* Models */
