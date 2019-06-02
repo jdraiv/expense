@@ -18,7 +18,7 @@ const tokenUtils = require("./utils/tokens.js");
 
 /* Middleware Setup */
 app.use(bodyParser.json());
-app.use(cookieParser('supersecret'));
+app.use(cookieParser(process.env.COOKIE_PARSER_KEY));
 
 
 /* Database Setup */
@@ -136,8 +136,8 @@ app.post('/auth', (req, res) => {
         // Now that the user has been found, we can proceed to validate the password
 
         // We create the tokens before entering the compare task
-        let jsonToken = createJWT();
-        let refreshToken = createRTK();
+        let jsonToken = createJWT(jsonData['email']);
+        let refreshToken = createRTK(jsonData['email']);
 
         bcrypt.compare(jsonData['password'], user.password).then((result) => {
             if (result) {

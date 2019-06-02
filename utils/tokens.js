@@ -11,13 +11,13 @@ function decodeRTK(reqObject) {
 }
 
 
-function createJWT() {
-    return jwt.sign({userID: decoded.userID, exp: Math.floor(Date.now() / 1000) + (60 * 15)}, "supersecret");
+function createJWT(id) {
+    return jwt.sign({userID: id, exp: Math.floor(Date.now() / 1000) + (60 * 15)}, "supersecret");
 }
 
 
-function createRTK() {
-    return jwt.sign({userID: decoded.userID}, "supersecret", {expiresIn: '360h'});
+function createRTK(id) {
+    return jwt.sign({userID: id}, "supersecret", {expiresIn: '360h'});
 }
 
 

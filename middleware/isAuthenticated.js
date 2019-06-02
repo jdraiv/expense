@@ -22,8 +22,8 @@ function isAuthenticated(req, res, next) {
                             res.send({"status": "error", "message": errorMesssage})
                         }
                         else {
-                            const newJsonToken = tokenUtils.createJWT();
-                            const newRefreshToken = tokenUtils.createRTK();
+                            const newJsonToken = tokenUtils.createJWT(decoded.userID);
+                            const newRefreshToken = tokenUtils.createRTK(decoded.userID);
                             
                             // Saving the new tokens
                             res.cookie('expense-jwt', newJsonToken, {signed: true, httpOnly: true});
