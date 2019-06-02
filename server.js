@@ -177,8 +177,10 @@ app.put('/update_budget', authMiddleware.isAuthenticated, (req, res, next) => {
             res.send({"status": "success"});
         }
         else {
-            res.send({"status": "error"});
+            res.send({"status": "Unable to update budget"});
         }
+    }).catch((err) => {
+        res.send({"status": "error"});
     });
 });
 
@@ -229,6 +231,8 @@ app.post('/delete_expense', authMiddleware.isAuthenticated, (req, res, next) => 
         else {
             res.send({"status": "error", "message": "Unable to delete product"});
         }
+    }).catch((err) => {
+        res.send({"status": "error"});
     });
 });
 
