@@ -18,5 +18,8 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^7.11.0",
     "sequelize": "^5.8.7"
+  },
+  "engines": {
+    "node": "10.x"
   }
 }
