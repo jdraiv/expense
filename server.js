@@ -156,7 +156,7 @@ app.post('/auth', (req, res) => {
                 res.send({"status": "error", "message": "Incorrect email or password"});
             }
         }).catch((err) => {
-            console.log(err);
+            res.send({"status": "error"});
         });
     });
 });
