@@ -1,5 +1,6 @@
 
 const jwt = require('jsonwebtoken');
+const tokenUtils = require("../utils/tokens.js")
 
 
 function isAuthenticated(req, res, next) {
@@ -21,8 +22,8 @@ function isAuthenticated(req, res, next) {
                             res.send({"status": "error", "message": errorMesssage})
                         }
                         else {
-                            const newJsonToken = jwt.sign({userID: decoded.userID, exp: Math.floor(Date.now() / 1000) + (60 * 15)}, "supersecret");
-                            const newRefreshToken = jwt.sign({userID: decoded.userID}, "supersecret", {expiresIn: '360h'});
+                            const newJsonToken = tokenUtils.createJWT();
+                            const newRefreshToken = tokenUtils.createRTK();
                             
                             // Saving the new tokens
                             res.cookie('expense-jwt', newJsonToken, {signed: true, httpOnly: true});
