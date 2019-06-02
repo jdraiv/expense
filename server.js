@@ -99,6 +99,11 @@ dbClient.authenticate().then(() => {
 });
 
 
+app.get('/', (req, res) => {
+    res.send("Expense APIS!");
+});
+
+
 app.post('/register', (req, res) => {
     let jsonData = req.body;
 
