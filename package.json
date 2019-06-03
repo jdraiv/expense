@@ -10,10 +10,11 @@
   "author": "Jdraiv",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "pg": "^7.11.0",
     "sequelize": "^5.8.7"
