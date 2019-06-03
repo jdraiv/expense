@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const Sequelize = require('sequelize');
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 
 /* Express App */
 const app = express();
@@ -17,17 +18,8 @@ const tokenUtils = require("./utils/tokens.js");
 
 
 /* Middleware Setup */
-
 // Without this, the web application is not able to interact with the server
-app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-
-    next();
-});
-
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_PARSER_KEY));
