@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const Sequelize = require('sequelize');
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 
 /* Express App */
 const app = express();
@@ -20,6 +21,12 @@ const tokenUtils = require("./utils/tokens.js");
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_PARSER_KEY));
 
+
+/* CORS */
+const corsOptions = {
+    origin: process.env.FRONTEND_ORIGIN,
+    credentials: true
+}
 
 /* Database Setup */
 const dbClient = new Sequelize(process.env.DATABASE_URL);
@@ -106,7 +113,7 @@ app.get('/', (req, res) => {
 });
 
 
-app.post('/register', (req, res) => {
+app.post('/register', cors(corsOptions), (req, res) => {
     let jsonData = req.body;
 
     bcrypt.hash(jsonData['password'], bcrypt.genSaltSync(11)).then((hashedPassword) => {
@@ -125,7 +132,7 @@ app.post('/register', (req, res) => {
 });
 
 
-app.post('/auth', (req, res) => {
+app.post('/auth', cors(corsOptions), (req, res) => {
     let jsonData = req.body;
 
     User.findOne({
@@ -164,7 +171,7 @@ app.post('/auth', (req, res) => {
 });
 
 
-app.post('/logout', (req, res) => {
+app.post('/logout', cors(corsOptions), (req, res) => {
     res.cookie('expense-jwt', "", {maxAge: 0, overwrite: true});
     res.cookie('expense-rtk',  "", {maxAge: 0, overwrite: true});
 
@@ -172,7 +179,7 @@ app.post('/logout', (req, res) => {
 });
 
 
-app.put('/update_budget', authMiddleware.isAuthenticated, (req, res, next) => {
+app.put('/update_budget', cors(corsOptions), authMiddleware.isAuthenticated, (req, res, next) => {
     let decodedJsonToken = tokenUtils.decodeJWT(req);
 
     User.update({
@@ -196,7 +203,7 @@ app.put('/update_budget', authMiddleware.isAuthenticated, (req, res, next) => {
 
 
 /* APIS for Expenses */
-app.post('/create_expense', authMiddleware.isAuthenticated, (req, res, next) => {
+app.post('/create_expense', cors(corsOptions), authMiddleware.isAuthenticated, (req, res) => {
     let jsonData = req.body;
     let decodedJsonToken = tokenUtils.decodeJWT(req);
 
@@ -214,7 +221,7 @@ app.post('/create_expense', authMiddleware.isAuthenticated, (req, res, next) => 
 });
 
 
-app.post('/get_expenses', authMiddleware.isAuthenticated, (req, res, next) => {
+app.post('/get_expenses', cors(corsOptions), authMiddleware.isAuthenticated, (req, res) => {
     let decodedJsonToken = tokenUtils.decodeJWT(req);
 
     Expense.findAll({
@@ -229,7 +236,7 @@ app.post('/get_expenses', authMiddleware.isAuthenticated, (req, res, next) => {
 });
 
 
-app.post('/delete_expense', authMiddleware.isAuthenticated, (req, res, next) => {
+app.post('/delete_expense', cors(corsOptions), authMiddleware.isAuthenticated, (req, res) => {
     Expense.destroy({
         where: {
             expenseID: req.body['id']
