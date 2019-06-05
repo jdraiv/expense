@@ -1,5 +1,5 @@
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -17,6 +17,23 @@ const tokenUtils = require("./utils/tokens.js");
 
 
 /* Middleware Setup */
+
+let allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', process.env.FRONTEND_ORIGIN);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+
+    // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+      res.send({"status": "error"});
+    }
+    else {
+      next();
+    }
+};
+
+app.use(allowCrossDomain);
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_PARSER_KEY));
 
@@ -141,16 +158,15 @@ app.post('/auth', (req, res) => {
 
         bcrypt.compare(jsonData['password'], user.password).then((result) => {
             if (result) {
-                res.cookie('expense-jwt', jsonToken, {signed: true, httpOnly: true});
-                res.cookie('expense-rtk', refreshToken, {signed: true, httpOnly: true});
-
                 res.send({
                     "status": "success", 
                     "data": {
                         "email": user.email, 
                         "budget": user.budget, 
                         "first_name": user.firstName, 
-                        "last_name": user.lastName
+                        "last_name": user.lastName,
+                        "expense-jwt": jsonToken,
+                        "expense-rtk": refreshToken
                     }
                 });
             }
@@ -164,23 +180,15 @@ app.post('/auth', (req, res) => {
 });
 
 
-app.post('/logout', (req, res) => {
-    res.cookie('expense-jwt', "", {maxAge: 0, overwrite: true});
-    res.cookie('expense-rtk',  "", {maxAge: 0, overwrite: true});
-
-    res.send({"status": "success", "message": "Successful logout"});
-});
-
-
-app.put('/update_budget', authMiddleware.isAuthenticated, (req, res, next) => {
-    let decodedJsonToken = tokenUtils.decodeJWT(req);
+app.put('/update_budget', authMiddleware.isAuthenticated, (req, res) => {
+    const userID = tokenUtils.onlyGetUserID(req);
 
     User.update({
         budget: req.body['budget']
     }, 
     {
         where: {
-            email: decodedJsonToken.userID
+            email: userID
         }
     }).then((result) => {
         if (result == 1) {
@@ -197,15 +205,14 @@ app.put('/update_budget', authMiddleware.isAuthenticated, (req, res, next) => {
 
 /* APIS for Expenses */
 app.post('/create_expense', authMiddleware.isAuthenticated, (req, res) => {
-    let jsonData = req.body;
-    let decodedJsonToken = tokenUtils.decodeJWT(req);
+    const userID = tokenUtils.onlyGetUserID(req);
 
     Expense.create({
         category: jsonData['category'], 
         total: jsonData['total'], 
         expenseDate: jsonData['date'], 
         payee: jsonData['payee'], 
-        email: decodedJsonToken.userID
+        email: userID
     }).then((expense) => {
         res.send({"status": "success", "data": expense});
     }).catch((err) => {
@@ -214,12 +221,12 @@ app.post('/create_expense', authMiddleware.isAuthenticated, (req, res) => {
 });
 
 
-app.post('/get_expenses', authMiddleware.isAuthenticated, (req, res) => {
-    let decodedJsonToken = tokenUtils.decodeJWT(req);
+app.post('/get_expenses/', authMiddleware.isAuthenticated, (req, res) => {
+    const userID = tokenUtils.onlyGetUserID(req);
 
     Expense.findAll({
         where: {
-            email: decodedJsonToken.userID
+            email: userID
         }
     }).then((expenses) => {
         res.send({"status": "success", "data": expenses});

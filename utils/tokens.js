@@ -1,13 +1,31 @@
 const jwt = require('jsonwebtoken');
 
 
-function decodeJWT(reqObject) {
-    return jwt.decode(reqObject.signedCookies["expense-jwt"], process.env.JWT_KEY);
+function getTokens(requestObject) {
+    try {
+        return JSON.parse(requestObject.headers.authorization);
+
+    }
+    catch(err) {
+        console.log(err);
+    }
 }
 
 
-function decodeRTK(reqObject) {
-    return jwt.decode(reqObject.signedCookies["expense-rtk"], process.env.RTK_KEY);
+function decodeJWT(token) {
+    return jwt.decode(token, process.env.JWT_KEY);
+}
+
+
+function decodeRTK(token) {
+    return jwt.decode(token, process.env.RTK_KEY);
+}
+
+
+function onlyGetUserID(requestObject) {
+    const availableTokens = getTokens(requestObject);
+
+    return decodeJWT(availableTokens["expense-jwt"])['userID']
 }
 
 
@@ -21,6 +39,8 @@ function createRTK(id) {
 }
 
 
+module.exports.getTokens = getTokens;
+module.exports.onlyGetUserID = onlyGetUserID;
 module.exports.decodeJWT = decodeJWT;
 module.exports.decodeRTK = decodeRTK;
 module.exports.createJWT = createJWT;
