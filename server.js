@@ -21,7 +21,6 @@ const tokenUtils = require("./utils/tokens.js");
 let allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', process.env.FRONTEND_ORIGIN);
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
 
     // intercept OPTIONS method
@@ -211,6 +210,7 @@ app.put('/update_budget', authMiddleware.isAuthenticated, (req, res) => {
 /* APIS for Expenses */
 app.post('/create_expense', authMiddleware.isAuthenticated, (req, res) => {
     const userID = tokenUtils.onlyGetUserID(req);
+    let jsonData = req.body;
 
     Expense.create({
         category: jsonData['category'], 
