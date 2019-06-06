@@ -94,6 +94,11 @@ const Expense = dbClient.define('expense', {
         allowNull: false,
         field: 'total'
     },
+    color: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        field: 'color'
+    },
     payee: {
         type: Sequelize.STRING,
         field: 'payee'
@@ -105,7 +110,7 @@ const Expense = dbClient.define('expense', {
             model: 'users',
             key: 'email'
         }
-    }
+    },
 }, {
     timestamps: false,
 });
@@ -210,6 +215,7 @@ app.post('/create_expense', authMiddleware.isAuthenticated, (req, res) => {
     Expense.create({
         category: jsonData['category'], 
         total: jsonData['total'], 
+        color: jsonData['color'],
         expenseDate: jsonData['date'], 
         payee: jsonData['payee'], 
         email: userID
