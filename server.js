@@ -227,7 +227,7 @@ app.post('/create_expense', authMiddleware.isAuthenticated, (req, res) => {
 });
 
 
-app.post('/get_expenses/', authMiddleware.isAuthenticated, (req, res) => {
+app.post('/get_expenses', authMiddleware.isAuthenticated, (req, res) => {
     const userID = tokenUtils.onlyGetUserID(req);
 
     Expense.findAll({
